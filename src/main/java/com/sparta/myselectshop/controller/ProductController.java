@@ -48,4 +48,23 @@ public class ProductController {
     ) {
         productService.addFolder(productId,folderId,userDetails.getUser());
     }
+
+    @GetMapping("/folders/{folderId}/products")
+    public Page<ProductResponseDto> getProductsInFolder(  // 정렬 기능 사용을 위해 Page 를 가져와서 사용. (폴더 들어가서 봤을 때 상품이 ID 별이라던가 오름,내림차순 정리되게)
+            @PathVariable Long folderId,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam("sortBy") String sortBy,
+            @RequestParam("isAsc") boolean isAsc,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+       return productService.getProductsInFolder(
+               folderId,
+               page-1,
+               size,
+               sortBy,
+               isAsc,
+               userDetails.getUser()
+       );
+    }
 }

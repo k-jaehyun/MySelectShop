@@ -104,4 +104,19 @@ public class ProductService {
 
         productFolderRepository.save(new ProductFolder(product,folder));
     }
+
+    public Page<ProductResponseDto> getProductsInFolder(Long folderId, int page, int size, String sortBy, boolean isAsc, User user) {
+        //페이징 처리(정렬, 페이지에 개수 제한, 페이지 넘기고, 등등)하는거 아래 3줄
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        //특정 폴더에 속해있는 특정 리스트가 필요한 상황. -> user와 (Product entity의)ProductFolderList의 folderID로 찾아옴
+        //쿼리 메서드로는 ResponseDto 타입으로 반환하지 못함. -> Product로 받아옴
+        Page<Product> productList = productRepository.findAllByUserAndProductFolderList_FolderId(user,folderId, pageable); //페이징 처리를 위해 pageable 넣어줌
+
+        Page<ProductResponseDto> responseDtoList = productList.map(ProductResponseDto::new);
+
+        return responseDtoList;
+    }
 }
