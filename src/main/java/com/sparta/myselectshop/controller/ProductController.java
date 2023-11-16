@@ -39,4 +39,13 @@ public class ProductController {
         return productService.getProducts(userDetails.getUser(), page-1, size, sortBy, isAsc);
                                                 // page는 0부터 시작하기 때문에 클라이언트에서 받아온 값에서 1을 빼야함.
     }
+
+    @PostMapping("products/{productId}/folder")
+    public void addFolder(
+            @PathVariable Long productId,
+            @RequestParam Long folderId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        productService.addFolder(productId,folderId,userDetails.getUser());
+    }
 }
