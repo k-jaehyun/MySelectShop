@@ -49,7 +49,7 @@ public class Product extends Timestamped {
         this.user = user;
     }
 
-    @OneToMany(mappedBy = "product") //mappedBy에는 타게팅이 되는 필드를 넣어줘여함.
+    @OneToMany(mappedBy = "product") //mappedBy에는 타게팅이 되는 필드를 넣어줘여함.  //즉시
     private List<ProductFolder> productFolderList = new ArrayList<>();
 
     public void update(ProductMypriceRequestDto requestDto) {

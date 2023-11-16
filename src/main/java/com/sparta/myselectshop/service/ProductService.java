@@ -49,6 +49,8 @@ public class ProductService {
         return new ProductResponseDto(product);
     }
 
+    @Transactional(readOnly = true)  //Product의 List<ProductFolder> 필드가 지연로딩(@Many로 끝남)이기 때문에 걸어줘야함.
+    // Products의 정보를 가져올 때 폴더의 정보도 클라이언트에게 전달해줘야함. -> 그래서 Product entity에 ProductFolder와 양방향으로 걸어줬음.
     public Page<ProductResponseDto> getProducts(User user, int page, int size, String sortBy, boolean isAsc) {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
