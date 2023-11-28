@@ -88,9 +88,9 @@ public class UserController {
     public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException { // 카카오에서 쿼리스트링방식으로 인가코드를 전해줌 -> requestParam으로 받는다. //JWT를 생성해서 쿠키를 직접 만들고, 그 쿠키에 JWT를 넣어서 전달 -> 브라우저에 자동으로 set 될 수 있도록 만들 예정. (이전엔 헤더에 넣어 보냈다)
         String token = kakaoService.kakaoLogin(code);
 
-        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token);
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token.substring(7));  // Cookie에는 띄어쓰기 못넣는다. -> "Bearer "로 시작하기 때문에 오류 -> substring해줬음
         cookie.setPath("/");
-        response.addCookie(cookie);
+        response.addCookie(cookie); //successfulAuthentication과 같은 역할
 
         return "redirect:/";
     }
