@@ -118,11 +118,11 @@ public class KakaoService {
         Long id = jsonNode.get("id").asLong();
         String nickname = jsonNode.get("properties")
                 .get("nickname").asText();
-//        String email = jsonNode.get("kakao_account")
-//                .get("email").asText();
+        String email = jsonNode.get("kakao_account")
+                .get("email").asText();
 
-        log.info("카카오 사용자 정보: " + id + ", " + nickname + ", ");
-        return new KakaoUserInfoDto(id, nickname);
+        log.info("카카오 사용자 정보: " + id + ", " + nickname + ", " + email);
+        return new KakaoUserInfoDto(id, nickname, email);
     }
 
     private User registerKakaoUserIfNeeded(KakaoUserInfoDto kakaoUserInfo) {

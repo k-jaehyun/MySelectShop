@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@EnableJpaAuditing
+//@EnableJpaAuditing  //Test 돌아갈 때 오류를 발생 -> Config로 만듦
 @EnableScheduling
 public class MyselectshopApplication {
 
