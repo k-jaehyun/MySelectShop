@@ -5,11 +5,13 @@ import com.sparta.myselectshop.dto.ProductMypriceRequestDto;
 import com.sparta.myselectshop.dto.ProductRequestDto;
 import com.sparta.myselectshop.dto.ProductResponseDto;
 import com.sparta.myselectshop.entity.*;
+import com.sparta.myselectshop.exception.ProductNotFoundException;
 import com.sparta.myselectshop.naver.dto.ItemDto;
 import com.sparta.myselectshop.repository.FolderRepositoty;
 import com.sparta.myselectshop.repository.ProductFolderRepository;
 import com.sparta.myselectshop.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -26,6 +29,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final FolderRepositoty folderRepositoty;
     private final ProductFolderRepository productFolderRepository;
+    private final MessageSource messageSource;
 
     public static final int MIN_MY_PRICE = 100;
 
@@ -38,11 +42,23 @@ public class ProductService {
     public ProductResponseDto updateProduct(Long id, ProductMypriceRequestDto requestDto) {
         int myprice = requestDto.getMyprice();
         if (myprice < MIN_MY_PRICE) {
-            throw new IllegalArgumentException("유효하지 않은 관심 가격입니다. 최소" + MIN_MY_PRICE + "원 이상으로 설정해 주세요.");
+            throw new IllegalArgumentException(
+                    messageSource.getMessage(
+                            "below.min.my.price",  //messages.properties의 key값
+                            new Integer[]{MIN_MY_PRICE},  // 메시지 내에서 매개변수를 사용 할 때 전달하는 값(messages.properties 를 보면 배열로 되어있음)
+                            "Wrong Price",  // 디폴트 메세지
+                            Locale.getDefault()  //언어설정을 가져오는 것임. -> "국제화 할 때 사용 할 수 있겠구나" 라고 생각하면 됨.(어느 지역에서 요청이 왔는지에 따라 다른 언어로 가능)
+                    )
+            );
         }
 
         Product product = productRepository.findById(id).orElseThrow(() ->
-                new NullPointerException("해당 상품을 찾을 수 없습니다.")
+                new ProductNotFoundException(messageSource.getMessage(
+                        "not.found.product",
+                        null,  //전해주는 값 없음
+                        "Not Found Product",
+                        Locale.getDefault() //기본 언어 설정
+                ))
         );
 
         product.update(requestDto);
