@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+import org.springframework.context.MessageSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
@@ -30,6 +31,9 @@ class ProductServiceTest {
 
     @Mock
     ProductFolderRepository productFolderRepository;
+
+    @Mock
+    MessageSource messageSource;
 
     @Test
     @DisplayName("관심 상품 희망가 - 최저가 이상으로 변경")
@@ -51,7 +55,7 @@ class ProductServiceTest {
 
         Product product = new Product(requestProductDto, user); //myprice는 생성자를 통해 주입하지 않기 때문에 0으로 생성됨
 
-        ProductService productService = new ProductService(productRepository, folderRepository, productFolderRepository);
+        ProductService productService = new ProductService(productRepository, folderRepository, productFolderRepository, messageSource);
 
         given(productRepository.findById(productId)).willReturn(Optional.of(product));
 
@@ -72,7 +76,7 @@ class ProductServiceTest {
         ProductMypriceRequestDto requestMyPriceDto = new ProductMypriceRequestDto();
         requestMyPriceDto.setMyprice(myprice);
 
-        ProductService productService = new ProductService(productRepository, folderRepository, productFolderRepository);
+        ProductService productService = new ProductService(productRepository, folderRepository, productFolderRepository, messageSource);
 
         // when   //throw에서 IllegalArgumentException로 넘어오기 때문에
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
